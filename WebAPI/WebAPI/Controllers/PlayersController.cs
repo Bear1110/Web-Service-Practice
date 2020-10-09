@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Models;
 
@@ -14,10 +15,12 @@ namespace WebAPI.Controllers
     public class PlayersController : ControllerBase
     {
         private readonly PlayerContext _context;
+        private readonly IActionContextAccessor _accessor;
 
-        public PlayersController(PlayerContext context)
+        public PlayersController(PlayerContext context, IActionContextAccessor aca)
         {
             _context = context;
+            _accessor = aca;
         }
 
         // GET: api/Players
@@ -79,10 +82,10 @@ namespace WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Player>> PostPlayer(Player player)
         {
+            player.IP = _accessor.ActionContext.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
             _context.Players.Add(player);
             await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetPlayer", new { id = player.Id }, player);
+            return CreatedAtAction(nameof(GetPlayer), new { id = player.Id }, player);
         }
 
         // DELETE: api/Players/5
