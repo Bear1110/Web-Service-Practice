@@ -24,7 +24,15 @@ void Client::lookupCommand(std::vector<std::string> parameters)
     }
     else {
         cout << parameters[0] << " is not a command." << endl;
+        listAllCommand();
     }
+}
+
+void Client::listAllCommand()
+{
+    cout << "All comand is below." << endl;
+    for (auto i : unordered_dict)
+        cout <<" - " <<i.first << endl;
 }
 
 void Client::join(std::vector<std::string> parameter)
@@ -39,6 +47,9 @@ void Client::login(std::vector<string> parameter)
         {"name", parameter[1]}
      };
     jsonData = netHelper.sendPostRequest(url.createPlayer(),jsonData);
+
+    if (jsonData.type() == nlohmann::detail::value_t::null)
+        return;
     playerName = jsonData["name"];
     myIP = jsonData["ip"];
     ID = jsonData["id"];

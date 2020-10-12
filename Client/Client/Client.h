@@ -20,6 +20,7 @@ private:
     APIUrl url;
 
 #pragma region Command
+    void listAllCommand();
     void listPlayer(std::vector<std::string> unused = std::vector<std::string>());
     void showInfo(std::vector<std::string> unused = std::vector<std::string>());
     void listRoom(std::vector<std::string> unused = std::vector<std::string>());

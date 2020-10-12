@@ -30,8 +30,11 @@ namespace WebAPI.Controllers
         }
 
         // GET: api/<HomeController> [FromQuery(Name = "playerid")]
+        // can just parameter as "[FromBody] Player fakePlayer" ( can skip [FromBody])
+        // then send { id : 123}
+        // or "[FromBody] long playerid" , then just send 5 (without quoto)
         [HttpPost("Join/{roomid}")]
-        public ActionResult<Room> Join(int roomid, [FromBody] Player fakePlayer) // can skip [FromBody]
+        public ActionResult<Room> Join(int roomid, Player fakePlayer)
         {
             var player = _context.Players.Find(fakePlayer.Id);
             if (player == null) return NotFound("Cannot find this user.");
@@ -41,10 +44,10 @@ namespace WebAPI.Controllers
         }
 
         // GET: api/<HomeController>
-        [HttpGet("Create")]
-        public ActionResult<Room> Create(long playerid) // use get pass parameter
+        [HttpPost("Create")]
+        public ActionResult<Room> Create(Player fakePlayer)
         {
-            var player = _context.Players.Find(playerid);
+            var player = _context.Players.Find(fakePlayer.Id);
             if (player == null) return NotFound("Cannot find this user.");
             var room = _gamecenter.CreateRoom(player);
             return room;
