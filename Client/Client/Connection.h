@@ -12,11 +12,10 @@ class Connection
 public:
     json sendPostRequest(std::string api, json data = {});
     json sendGetRequest(std::string api, json data = {});
-    Connection(std::string host);
+    Connection();
 private:
-    CURL* curl;
-    CURLcode res;
-    std::string hostURL;
+    CURL* curl = nullptr;
+    CURLcode res = CURL_LAST;
     std::string readBuffer;
 
     void InitCurl();

@@ -4,13 +4,13 @@
 
 using namespace std;
 
-Connection::Connection(std::string host) : hostURL(host), curl(nullptr),res(CURL_LAST) {}
+Connection::Connection() {}
 
-json Connection::sendPostRequest(string api, json data)
+json Connection::sendPostRequest(string apiUrl, json data)
 {
     InitCurl();
     if (!curl) return json();
-    curl_easy_setopt(curl, CURLOPT_URL, (hostURL + api).c_str());
+    curl_easy_setopt(curl, CURLOPT_URL, apiUrl.c_str());
     setJsonData(data);
     res = curl_easy_perform(curl);
 
@@ -18,14 +18,20 @@ json Connection::sendPostRequest(string api, json data)
         fprintf(stderr, "curl_easy_perform() failed: %s\n",
             curl_easy_strerror(res));
     curl_easy_cleanup(curl);
-    return json::parse(readBuffer);
+    try {
+        return json::parse(readBuffer);
+    }
+    catch (...) {
+        cout << readBuffer << endl;
+        return json();
+    }
 }
 
-json Connection::sendGetRequest(string api, json data)
+json Connection::sendGetRequest(string apiUrl, json data)
 {
     InitCurl();
     if (!curl) return json();
-    curl_easy_setopt(curl, CURLOPT_URL, (hostURL+ api).c_str());
+    curl_easy_setopt(curl, CURLOPT_URL, apiUrl.c_str());
     res = curl_easy_perform(curl);
 
     if (res != CURLE_OK)

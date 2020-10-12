@@ -3,13 +3,11 @@
 #include "Client.h"
 
 using namespace std;
-constexpr auto host = "https://localhost:44311/api";
-
 vector<string> prepocessCommand(string& rawCommand);
 
 int main()
 {
-    Client client(host);
+    Client client;
     cout << "Please input command.\n";
     while (true)
     {

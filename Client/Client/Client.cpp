@@ -3,12 +3,11 @@
 
 using namespace std;
 
-Client::Client(string url)
+Client::Client()
 {
     playerName = "undefined";
     myIP = "255.255.255.255";
     ID = 0;
-    netHelper = new Connection(url);
     unordered_dict.emplace("login", &Client::login);
     unordered_dict.emplace("listPlayer", &Client::listPlayer);
     unordered_dict.emplace("listRoom", &Client::listRoom);
@@ -17,10 +16,21 @@ Client::Client(string url)
     unordered_dict.emplace("create", &Client::createRoom);
 }
 
+void Client::lookupCommand(std::vector<std::string> parameters)
+{
+    unordered_map<string, ScriptFunction>::iterator it = unordered_dict.find(parameters[0]);
+    if (it != unordered_dict.end()) {
+        (this->*(it->second))(parameters); // (this->*unordered_dict[parameters[0]])(parameters);
+    }
+    else {
+        cout << parameters[0] << " is not a command." << endl;
+    }
+}
+
 void Client::join(std::vector<std::string> parameter)
 {
-    string getPara = "?roomid=" + parameter[1] + "&playerid=" + to_string(ID);
-    auto jsonData = netHelper->sendGetRequest("/join"+ getPara);
+    json jsonData = { {"id", ID} };
+    jsonData = netHelper.sendPostRequest(url.joinRoom(parameter[1]), jsonData);
 }
 
 void Client::login(std::vector<string> parameter)
@@ -28,7 +38,7 @@ void Client::login(std::vector<string> parameter)
     json jsonData = {
         {"name", parameter[1]}
      };
-    jsonData = netHelper->sendPostRequest("/login",jsonData);
+    jsonData = netHelper.sendPostRequest(url.createPlayer(),jsonData);
     playerName = jsonData["name"];
     myIP = jsonData["ip"];
     ID = jsonData["id"];
@@ -36,7 +46,7 @@ void Client::login(std::vector<string> parameter)
 }
 
 void Client::listPlayer(vector<string> command) {
-    json jsonData = netHelper->sendGetRequest("/players");
+    json jsonData = netHelper.sendGetRequest(url.getPlayers());
     cout << "There are " << jsonData.size() << " plays.\n";
     for (auto& player : jsonData)
     {
@@ -53,7 +63,7 @@ void Client::showInfo(std::vector<std::string> s)
 
 void Client::listRoom(std::vector<std::string> unused)
 {
-    auto jsonData = netHelper->sendGetRequest("/lookup");
+    auto jsonData = netHelper.sendGetRequest(url.getRooms());
     cout << "There are " << jsonData.size() << " rooms.\n";
     for (auto& room : jsonData)
     {
@@ -63,16 +73,7 @@ void Client::listRoom(std::vector<std::string> unused)
 
 void Client::createRoom(std::vector<std::string> unused)
 {
-    auto jsonData = netHelper->sendGetRequest("/create/"+ to_string(ID));
-}
-
-void Client::lookupCommand(std::vector<std::string> parameters)
-{
-    unordered_map<string, ScriptFunction>::iterator it = unordered_dict.find(parameters[0]);
-    if (it != unordered_dict.end()) {
-        (this->*(it->second))(parameters); // (this->*unordered_dict[parameters[0]])(parameters);
-    }
-    else {
-        cout << parameters[0] << " is not a command." << endl;
-    }
+    json jsonData = { {"id", ID} };
+    jsonData = netHelper.sendPostRequest(url.createRoom(), jsonData);
+    listRoom();
 }
