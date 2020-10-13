@@ -1,1 +1,1 @@
-nuget nlohmann json
+# Client HttpClient C# .net core
