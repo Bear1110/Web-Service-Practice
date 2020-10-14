@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using WebAPI.Hubs;
 using WebAPI.Models;
 
 namespace WebAPI.Controllers
@@ -16,11 +16,19 @@ namespace WebAPI.Controllers
     {
         private readonly PlayerContext _context;
         private readonly IActionContextAccessor _accessor;
+        private readonly IHubContext<ChatHub> _hubContext;
+        private readonly GameCenter _gamecenter;
 
-        public PlayersController(PlayerContext context, IActionContextAccessor aca)
+        public PlayersController(
+            PlayerContext context,
+            IActionContextAccessor aca,
+            IHubContext<ChatHub> hubContext,
+            GameCenter gameCenter)
         {
             _context = context;
             _accessor = aca;
+            _hubContext = hubContext;
+            _gamecenter = gameCenter;
         }
 
         // GET: api/Players
@@ -43,6 +51,9 @@ namespace WebAPI.Controllers
 
             return player;
         }
+
+        [HttpGet("online")]
+        public ActionResult<List<Player>> GetOnlinePlayer() => _gamecenter.ListOnlinePlayer();
 
         // PUT: api/Players/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
@@ -85,6 +96,9 @@ namespace WebAPI.Controllers
             player.IP = _accessor.ActionContext.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
             _context.Players.Add(player);
             await _context.SaveChangesAsync();
+
+            BroadcastHelper.Online(_hubContext,player);
+            _gamecenter.addOnlinePlayer(player);
             return CreatedAtAction(nameof(GetPlayer), new { id = player.Id }, player);
         }
 
@@ -104,9 +118,6 @@ namespace WebAPI.Controllers
             return player;
         }
 
-        private bool PlayerExists(long id)
-        {
-            return _context.Players.Any(e => e.Id == id);
-        }
+        private bool PlayerExists(long id) => _context.Players.Any(e => e.Id == id);
     }
 }

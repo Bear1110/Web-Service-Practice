@@ -1,10 +1,4 @@
 # Web-Service-Practice
-Server use .NET Core , Client use C++ libCurl.
+Server use .NET Core , Client use C# Http Client.
 
-## Server
-
-Reference Link [MSDN](https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api)
-
-## Client Install
-
-Reference Link [My Experience](https://adc.github.trendmicro.com/william-hsiung/http-server-client-practice/tree/master/Client)
+Please review `WebAPI` and `Client` project to get more detail.

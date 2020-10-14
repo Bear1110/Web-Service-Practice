@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Client
+﻿namespace Client
 {
     class APIUrl
     {
-        private const string host = "https://localhost:44311/api";
-        private const string playerURL = host+"/players/";
-        private const string roomURL = host + "/rooms/";
+        private const string host = "https://localhost:44311";
+        private const string playerURL = host+ "/api/players/";
+        private const string roomURL = host + "/api/rooms/";
+        private const string signalRChannel = host +"/ChatHub";
+
         public static string createPlayer()
         {
             return playerURL;
@@ -32,6 +30,11 @@ namespace Client
         public static string createRoom()
         {
             return roomURL + "create";
+        }
+
+        public static string signalR()
+        {
+            return signalRChannel;
         }
     }
 }

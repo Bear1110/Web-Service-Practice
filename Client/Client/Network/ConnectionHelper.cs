@@ -1,18 +1,17 @@
-﻿using Client.Models;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 
-namespace Client
+namespace Client.Network
 {
     class ConnectionHelper
     {
         public static readonly string errorMessage = "error";
         private static readonly HttpClient client = new HttpClient();
+
         public static async Task<string> SendGetRequest(string apiUrl)
         {
             try

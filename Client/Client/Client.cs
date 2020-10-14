@@ -1,9 +1,7 @@
 ﻿using Client.Models;
+using Client.Network;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Text;
 using System.Text.Json;
 
 namespace Client
@@ -14,18 +12,24 @@ namespace Client
         private readonly Dictionary<string, Action<List<string>>> commandHandler;
         private Player myself;
         private T DeserializeJson<T>(string jsonString) => JsonSerializer.Deserialize<T>(jsonString, jsonOption);
+        SignalRConnection signalR;
 
         public Client()
         {
+            signalR = new SignalRConnection();
             jsonOption = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
             commandHandler = new Dictionary<string, Action<List<string>>>();
-            commandHandler.Add("listPlayer", ListPlayer);
+            commandHandler.Add("listplayer", ListPlayer);
             commandHandler.Add("login", Login);
-            commandHandler.Add("listRoom", ListRoom);
+            commandHandler.Add("listroom", ListRoom);
             commandHandler.Add("join", JoinRoom);
             commandHandler.Add("create", CreateRoom);
-            //unordered_dict.emplace("info", &Client::showInfo);
+            commandHandler.Add("logout", Logout);
+            commandHandler.Add("info", ShowMyInfo);
         }
+
+
+        public void ShowMyInfo(List<string> unused) => Console.WriteLine(myself.ToString());
 
         public void LookupCommand(List<string> parameters)
         {
@@ -64,6 +68,11 @@ namespace Client
 
         private async void Login(List<string> parameter)
         {
+            if(myself != null)
+            {
+                Console.WriteLine("You already logged in.");
+                return;
+            }
             var player = new Player { Name = parameter[1] };
             string jsonString = JsonSerializer.Serialize(player);
             jsonString = await ConnectionHelper.SendPostRequest(APIUrl.createPlayer(), jsonString);
@@ -71,6 +80,18 @@ namespace Client
                 return;
             myself = DeserializeJson<Player>(jsonString);
         }
+
+        private async void Logout(List<string> parameter)
+        {
+            if (myself == null)
+            {
+                Console.WriteLine("You are already logged out.");
+                return;
+            }
+            signalR.SendOffline(myself);
+            myself = null;
+        }
+
         #region room
 
         private async void JoinRoom(List<string> parameter)

@@ -7,6 +7,7 @@ namespace WebAPI
     public class GameCenter
     {
         private static readonly List<Room> rooms = new List<Room>();
+        private static readonly List<Player> onlinePlayers = new List<Player>();
         private readonly PlayerContext _context;
 
         public GameCenter(PlayerContext context)
@@ -14,6 +15,17 @@ namespace WebAPI
             _context = context;
         }
 
+        public GameCenter()
+        {
+        }
+
+        #region Player
+        public void addOnlinePlayer(Player player) => onlinePlayers.Add(player);
+        public void removeOnlinePlayer(Player player) => onlinePlayers.Remove(onlinePlayers.Single(e => e.Id == player.Id));
+        public List<Player> ListOnlinePlayer() => onlinePlayers;
+        #endregion
+
+        #region Room
         public IEnumerable<Room> GetRooms()
         {
             return rooms.ToList();
@@ -33,5 +45,6 @@ namespace WebAPI
                 room.player2 = player;
             return room;
         }
+        #endregion
     }
 }

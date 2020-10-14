@@ -1,13 +1,15 @@
 # Web-Service-Practice
-Server use .NET Core , Client use C++ libCurl.
+Server use .NET Core.
 
 ## Server
 
 Reference Link [MSDN](https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api)
 
-## Client Install
 
-Reference Link [My Experience](https://adc.github.trendmicro.com/william-hsiung/http-server-client-practice/tree/master/Client)
+## SignalR
+
+https://docs.microsoft.com/zh-tw/aspnet/core/tutorials/signalr
+
 
 ## deploy to iis 
 
@@ -20,3 +22,6 @@ And then setting the permission.
 https://blog.johnwu.cc/article/iis-run-asp-net-core.html
 
 https://dotnet.microsoft.com/download/archives
+
+
+ActionFilterAttribute can do something before,after,beforeResult,afterResult action 
