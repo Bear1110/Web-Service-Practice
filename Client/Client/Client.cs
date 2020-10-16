@@ -9,7 +9,7 @@ namespace Client
     class Client
     {
         private readonly JsonSerializerOptions jsonOption;
-        private readonly Dictionary<string, Action<List<string>>> commandHandler;
+        private readonly Dictionary<string, Action<string[]>> commandHandler;
         private Player myself;
         private T DeserializeJson<T>(string jsonString) => JsonSerializer.Deserialize<T>(jsonString, jsonOption);
         SignalRConnection signalR;
@@ -18,7 +18,7 @@ namespace Client
         {
             signalR = new SignalRConnection();
             jsonOption = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            commandHandler = new Dictionary<string, Action<List<string>>>();
+            commandHandler = new Dictionary<string, Action<string[]>>();
             commandHandler.Add("listplayer", ListPlayer);
             commandHandler.Add("login", Login);
             commandHandler.Add("listroom", ListRoom);
@@ -29,14 +29,13 @@ namespace Client
         }
 
 
-        public void ShowMyInfo(List<string> unused) => Console.WriteLine(myself.ToString());
+        public void ShowMyInfo(params string[] unused) => Console.WriteLine(myself.ToString());
 
-        public void LookupCommand(List<string> parameters)
+        public void LookupCommand(string[] parameters)
         {
             string command = parameters[0];
-            Action<List<string>> outFunction = null;
-            commandHandler.TryGetValue(command, out outFunction);
-            if (outFunction != null)
+            Action<string[]> outFunction = null;
+            if (commandHandler.TryGetValue(command, out outFunction))
             {
                 outFunction(parameters);
             }
@@ -56,7 +55,7 @@ namespace Client
             }
         }
 
-        private async void ListPlayer(List<string> unused)
+        private async void ListPlayer(params string[] parameters)
         {
             string jsonString = await ConnectionHelper.SendGetRequest(APIUrl.getPlayers());
             var players = DeserializeJson<List<Player>>(jsonString);
@@ -66,14 +65,14 @@ namespace Client
         }
 
 
-        private async void Login(List<string> parameter)
+        private async void Login(params string[] parameters)
         {
             if(myself != null)
             {
                 Console.WriteLine("You already logged in.");
                 return;
             }
-            var player = new Player { Name = parameter[1] };
+            var player = new Player { Name = parameters[1] };
             string jsonString = JsonSerializer.Serialize(player);
             jsonString = await ConnectionHelper.SendPostRequest(APIUrl.createPlayer(), jsonString);
             if (jsonString.Equals(ConnectionHelper.errorMessage))
@@ -81,7 +80,7 @@ namespace Client
             myself = DeserializeJson<Player>(jsonString);
         }
 
-        private async void Logout(List<string> parameter)
+        private async void Logout(params string[] unused)
         {
             if (myself == null)
             {
@@ -94,7 +93,7 @@ namespace Client
 
         #region room
 
-        private async void JoinRoom(List<string> parameter)
+        private async void JoinRoom(params string[] parameter)
         {
             string jsonString = JsonSerializer.Serialize(myself);
             jsonString = await ConnectionHelper.SendPostRequest(APIUrl.joinRoom(parameter[1]), jsonString);
@@ -102,14 +101,14 @@ namespace Client
                 return;
         }
 
-        private async void CreateRoom(List<string> unused)
+        private async void CreateRoom(params string[] unused)
         {
             string jsonString = JsonSerializer.Serialize(myself);
             jsonString = await ConnectionHelper.SendPostRequest(APIUrl.createRoom(), jsonString);
             ListRoom();
         }
 
-        private async void ListRoom(List<string> unused = null)
+        private async void ListRoom(params string[] unused)
         {
             string jsonString = await ConnectionHelper.SendGetRequest(APIUrl.getRooms());
             var rooms = DeserializeJson<List<Room>>(jsonString);

@@ -6,6 +6,6 @@
         public string Name { get; set; }
         public string IP { get; set; }
 
-        public override string ToString() => string.Format($"ID:{Id}  Name:{Name,-16 } IP:{IP}");
+        public override string ToString() => string.Format($"ID:{Id}  Name:{Name,-16} IP:{IP}");
     }
 }

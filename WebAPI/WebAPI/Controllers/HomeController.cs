@@ -10,6 +10,6 @@ namespace WebAPI.Controllers
     public class HomeController : ControllerBase
     {
         [HttpGet]
-        public IEnumerable<string> Get() => new string[] { "Login", "Create", "Join" };
+        public IEnumerable<string> Get() => new string[] { "api/[YourControllerName]" };
     }
 }

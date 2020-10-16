@@ -8,8 +8,9 @@ Reference Link [MSDN](https://docs.microsoft.com/en-us/aspnet/core/tutorials/fir
 
 ## SignalR
 
-https://docs.microsoft.com/zh-tw/aspnet/core/tutorials/signalr
+[Reference](https://docs.microsoft.com/zh-tw/aspnet/core/tutorials/signalr)
 
+use `/chathub` as connect channel.
 
 ## deploy to iis 
 

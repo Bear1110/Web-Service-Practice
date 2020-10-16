@@ -11,9 +11,10 @@ namespace Client
             Client client = new Client();
             //var list = new List<string>() { "login", "jsonString" };
             //client.LookupCommand(list);
+            Console.WriteLine("Please input command.");
             while (true)
             {
-                client.LookupCommand(Console.ReadLine().Split(' ').ToList());
+                client.LookupCommand(Console.ReadLine().Split(' '));
             }
         }
     }

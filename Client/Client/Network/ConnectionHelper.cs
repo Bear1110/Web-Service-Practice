@@ -17,9 +17,7 @@ namespace Client.Network
             try
             {
                 HttpResponseMessage response = await client.GetAsync(apiUrl);
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-                return responseBody;
+                return await EnsureSuccessAndConvertToString(response);
             }
             catch (HttpRequestException e)
             {
@@ -32,19 +30,21 @@ namespace Client.Network
         {
             try
             {
-                // 將 data 轉為 json
-                string json = JsonSerializer.Serialize(postData);
                 HttpContent contentPost = new StringContent(postData, Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await client.PostAsync(apiUrl, contentPost);
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-                return responseBody;
+                return await EnsureSuccessAndConvertToString(response);
             }
             catch (HttpRequestException e)
             {
                 Console.WriteLine("\nException Caught! Message :{0} ", e.Message);
                 return errorMessage;
             }
+        }
+
+        private static async Task<string> EnsureSuccessAndConvertToString(HttpResponseMessage response)
+        {
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
         }
     }
 }
