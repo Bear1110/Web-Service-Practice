@@ -7,32 +7,37 @@
         private const string roomURL = host + "/api/rooms/";
         private const string signalRChannel = host +"/ChatHub";
 
-        public static string createPlayer()
+        public static string CreatePlayer()
         {
             return playerURL;
         }
 
-        public static string getPlayers()
+        public static string GetPlayers()
         {
             return playerURL;
         }
 
-        public static string getRooms()
+        public static string GetRooms()
         {
             return roomURL;
         }
 
-        public static string joinRoom(string roomid)
+        public static string JoinRoom(string roomid)
         {
             return roomURL + "join/" + roomid;
         }
 
-        public static string createRoom()
+        public static string CreateRoom()
         {
             return roomURL + "create";
         }
 
-        public static string signalR()
+        public static string StartGame(int roomId)
+        {
+            return roomURL + "Start/"+ roomId.ToString();
+        }
+
+        public static string SignalR()
         {
             return signalRChannel;
         }

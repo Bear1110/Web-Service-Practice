@@ -1,24 +1,46 @@
-﻿using System.Data.Common;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebAPI.Models
 {
+    [Table("Rooms")]
     public class Room
     {
-        private static int autoIncrement = 0;
-        public long Id { get; set; }
-        public Player player1 { get; set; }
-        public Player player2 { get; set; }
-
+        public int Id { get; set; }
+        public virtual Player Player1 { get; set; }
+        public virtual Player Player2 { get; set; }
+        public Room() {}
         public Room(Player player)
         {
-            Id = autoIncrement++;
-            player1 = player;
+            Player1 = player;
         }
 
-        public string RoomInfo()
+        public bool isEmpty()
         {
+            return Player1 == null && Player2 == null;
+        }
+        public bool isFull()
+        {
+            return Player1 != null && Player2 != null;
+        }
 
-            return "";
+        public void JoinPlayer(Player player)
+        {
+            if (Player1 == null)
+                Player1 = player;
+            else
+                Player2 = player;
+        }
+
+        public void RemovePlayer(int playerId)
+        {
+            if (Player1 != null)
+            {
+                Player1 = Player1.Id == playerId ? null : Player1;
+            }
+            if (Player2 != null)
+            {
+                Player2 = Player2.Id == playerId ? null : Player2;
+            }
         }
     }
 }

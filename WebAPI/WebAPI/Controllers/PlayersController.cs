@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -14,13 +15,13 @@ namespace WebAPI.Controllers
     [ApiController]
     public class PlayersController : ControllerBase
     {
-        private readonly PlayerContext _context;
+        private readonly GameDBContext _context;
         private readonly IActionContextAccessor _accessor;
         private readonly IHubContext<ChatHub> _hubContext;
         private readonly GameCenter _gamecenter;
 
         public PlayersController(
-            PlayerContext context,
+            GameDBContext context,
             IActionContextAccessor aca,
             IHubContext<ChatHub> hubContext,
             GameCenter gameCenter)
@@ -91,14 +92,22 @@ namespace WebAPI.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Player>> PostPlayer(Player player)
+        public async Task<ActionResult<Player>> PostPlayer(Player onlyName)
         {
-            player.IP = _accessor.ActionContext.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
-            _context.Players.Add(player);
+            string inputName = onlyName.Name;
+            var player = await _context.Players.SingleOrDefaultAsync(e => e.Name == inputName);
+            if (player != null) {
+                _context.Entry(player).State = EntityState.Modified;
+            }
+            else
+            {
+                player = new Player(inputName);
+                _context.Players.Add(player);
+            }
+            player.Ip = _accessor.ActionContext.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
             await _context.SaveChangesAsync();
-
-            BroadcastHelper.Online(_hubContext,player);
-            _gamecenter.addOnlinePlayer(player);
+            BroadcastHelper.Online(_hubContext, player);
+            _gamecenter.AddOnlinePlayer(player);
             return CreatedAtAction(nameof(GetPlayer), new { id = player.Id }, player);
         }
 
