@@ -92,7 +92,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(SolutionDir)packages\curl-vc141-dynamic-x86_64.7.59.0\build\native\lib\Win32\static\libcurl_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(SolutionDir)packages\curl-vc141-dynamic-x86_64.7.59.0\build\native\lib\Win32\static\libcurl_debug.lib;C:\Repository\Web-Service-Practice\Client-cpp\packages\Microsoft.AspNet.SignalR.Client.Cpp.v140.WinDesktop.1.0.0-beta2\build\native\lib\Win32\v140\Debug\signalrclient.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -117,10 +117,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)packages\curl-vc141-dynamic-x86_64.7.59.0\build\native\lib\x64\static\libcurl_debug.lib;$(SolutionDir)signalrclient.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -131,12 +133,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(SolutionDir)packages\curl-vc141-dynamic-x86_64.7.59.0\build\native\lib\x64\static\libcurl.lib;$(SolutionDir)signalrclient.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -144,6 +149,7 @@
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="Connection.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SignalRConnection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -152,6 +158,8 @@
     <ClInclude Include="APIUrl.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Connection.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="SignalRConnection.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

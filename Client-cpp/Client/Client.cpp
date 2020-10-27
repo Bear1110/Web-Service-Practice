@@ -5,9 +5,10 @@ using namespace std;
 
 Client::Client()
 {
-    playerName = "undefined";
-    myIP = "255.255.255.255";
-    ID = 0;
+    myself = new Player();
+    myself->Name = "undefined";
+    myself->Ip = "255.255.255.255";
+    myself->Id = 0;
     unordered_dict.emplace("login", &Client::login);
     unordered_dict.emplace("listPlayer", &Client::listPlayer);
     unordered_dict.emplace("listRoom", &Client::listRoom);
@@ -37,8 +38,8 @@ void Client::listAllCommand()
 
 void Client::join(std::vector<std::string> parameter)
 {
-    json jsonData = { {"id", ID} };
-    jsonData = netHelper.sendPostRequest(url.joinRoom(parameter[1]), jsonData);
+    json jsonData = { {"id", myself->Id} };
+    jsonData = netHelper.sendPostRequest(url.JoinRoom(parameter[1]), jsonData);
 }
 
 void Client::login(std::vector<string> parameter)
@@ -46,18 +47,18 @@ void Client::login(std::vector<string> parameter)
     json jsonData = {
         {"name", parameter[1]}
      };
-    jsonData = netHelper.sendPostRequest(url.createPlayer(),jsonData);
+    jsonData = netHelper.sendPostRequest(url.CreatePlayer(),jsonData);
 
     if (jsonData.type() == nlohmann::detail::value_t::null)
         return;
-    playerName = jsonData["name"];
-    myIP = jsonData["ip"];
-    ID = jsonData["id"];
+    myself->Name = jsonData["name"];
+    myself->Ip = jsonData["ip"];
+    myself->Id = jsonData["id"];
     showInfo();
 }
 
 void Client::listPlayer(vector<string> command) {
-    json jsonData = netHelper.sendGetRequest(url.getPlayers());
+    json jsonData = netHelper.sendGetRequest(url.GetPlayers());
     cout << "There are " << jsonData.size() << " plays.\n";
     for (auto& player : jsonData)
     {
@@ -67,14 +68,14 @@ void Client::listPlayer(vector<string> command) {
 
 void Client::showInfo(std::vector<std::string> s)
 {
-    cout << "ID: " << ID << endl;
-    cout << "Name: " + playerName << endl;
-    cout << "IP: " + myIP << endl;
+    cout << "ID: " << myself->Id << endl;
+    cout << "Name: " + myself->Name << endl;
+    cout << "IP: " + myself->Ip << endl;
 }
 
 void Client::listRoom(std::vector<std::string> unused)
 {
-    auto jsonData = netHelper.sendGetRequest(url.getRooms());
+    auto jsonData = netHelper.sendGetRequest(url.GetRooms());
     cout << "There are " << jsonData.size() << " rooms.\n";
     for (auto& room : jsonData)
     {
@@ -84,7 +85,7 @@ void Client::listRoom(std::vector<std::string> unused)
 
 void Client::createRoom(std::vector<std::string> unused)
 {
-    json jsonData = { {"id", ID} };
-    jsonData = netHelper.sendPostRequest(url.createRoom(), jsonData);
+    json jsonData = { {"id", myself->Id} };
+    jsonData = netHelper.sendPostRequest(url.CreateRoom(), jsonData);
     listRoom();
 }

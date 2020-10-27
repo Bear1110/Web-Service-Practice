@@ -171,6 +171,8 @@ namespace Client
         private void Attack(params string[] xy)
         {
             if (!isPlaying) return;
+
+            if (xy.Length != 3) return;
             int x = Convert.ToInt32(xy[1]);
             int y = Convert.ToInt32(xy[2]);
             signalR.SendAttack(myroom, x, y);

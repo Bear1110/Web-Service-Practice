@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Models">
+      <UniqueIdentifier>{eb8282eb-1410-42f3-98a1-b8e1521b76b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -27,6 +30,9 @@
     <ClCompile Include="APIUrl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SignalRConnection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -39,6 +45,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="APIUrl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Models</Filter>
+    </ClInclude>
+    <ClInclude Include="SignalRConnection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

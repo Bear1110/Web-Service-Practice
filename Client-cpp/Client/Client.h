@@ -3,6 +3,8 @@
 #include <unordered_map>
 #include "Connection.h"
 #include "APIUrl.h"
+#include "Player.h"
+#include "SignalRConnection.h"
 
 class Client
 {
@@ -11,13 +13,12 @@ public:
     void lookupCommand(std::vector<std::string>);
     Client();
 private:
-    std::string playerName;
-    std::string myIP;
-    unsigned int ID;
+    Player *myself;
     std::unordered_map<std::string, ScriptFunction>unordered_dict;
 
     Connection netHelper;
     APIUrl url;
+    SignalRConnection e;
 
 #pragma region Command
     void listAllCommand();
